@@ -23,7 +23,7 @@ export class WalkthroughService {
           position: 'right'
         },
         {
-          title: 'Deploy your contract',
+          title: 'Deploy your contract in Klaytn',
           element: document.querySelector('#runIcons'),
           intro: 'Choose a chain, deploy a contract and play with your functions.',
           tooltipClass: 'bg-light text-dark',

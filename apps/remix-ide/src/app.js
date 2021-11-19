@@ -1,7 +1,7 @@
 'use strict'
 import { basicLogo } from './app/ui/svgLogo'
 
-import { RunTab, makeUdapp } from './app/udapp'
+import { makeUdapp } from './app/udapp'
 
 import PanelsResize from './lib/panels-resize'
 import { RemixEngine } from './remixEngine'
@@ -21,6 +21,9 @@ import { MainPanel } from './app/components/main-panel'
 import { OffsetToLineColumnConverter, CompilerMetadata, CompilerArtefacts, FetchAndCompile, CompilerImports } from '@remix-project/core-plugin'
 
 import migrateFileSystem from './migrateFileSystem'
+
+import * as packageJson from '../../../package.json'
+import { IframePlugin } from '@remixproject/engine-web'
 
 const isElectron = require('is-electron')
 const csjs = require('csjs-inject')
@@ -420,17 +423,35 @@ class App {
 
     // CONTENT VIEWS & DEFAULT PLUGINS
     const compileTab = new CompileTab(registry.get('config').api, registry.get('filemanager').api)
-    const run = new RunTab(
-      blockchain,
-      registry.get('config').api,
-      registry.get('filemanager').api,
-      registry.get('editor').api,
-      filePanel,
-      registry.get('compilersartefacts').api,
-      networkModule,
-      mainview,
-      registry.get('fileproviders/browser').api
-    )
+    // const run = new RunTab(
+    //   blockchain,
+    //   registry.get('config').api,
+    //   registry.get('filemanager').api,
+    //   registry.get('editor').api,
+    //   filePanel,
+    //   registry.get('compilersartefacts').api,
+    //   networkModule,
+    //   mainview,
+    //   registry.get('fileproviders/browser').api
+    // )
+
+    const klaytnPlugin = new IframePlugin({
+      name: 'klaytn',
+      hash: 'klaytn-plugin',
+      displayName: 'Deploy & run transactions',
+      icon: 'assets/img/Klaytn_Symbol_Black.png',
+      description: 'execute and save transactions',
+      kind: 'udapp',
+      location: 'sidePanel',
+      documentation: 'https://remix-ide.readthedocs.io/en/latest/run.html',
+      version: packageJson.version,
+      permission: true,
+      events: ['newTransaction'],
+      methods: ['createVMAccount', 'sendTransaction', 'getAccounts', 'pendingTransactionsCount'],
+      url: 'https://klaytn-remix-plugin.ozys.net/'
+    })
+    klaytnPlugin.profile = { ...klaytnPlugin.profile }
+
     const analysis = new AnalysisTab(registry)
     const debug = new DebuggerTab()
     const test = new TestTab(
@@ -444,7 +465,8 @@ class App {
 
     engine.register([
       compileTab,
-      run,
+      // run,
+      klaytnPlugin,
       debug,
       analysis,
       test,
@@ -479,6 +501,7 @@ class App {
     // Set workspace after initial activation
     appManager.on('editor', 'editorMounted', () => {
       if (Array.isArray(workspace)) {
+        workspace.push('klaytn')
         appManager.activatePlugin(workspace).then(async () => {
           try {
             if (params.deactivate) {
@@ -507,7 +530,7 @@ class App {
         }).catch(console.error)
       } else {
         // activate solidity plugin
-        appManager.activatePlugin(['solidity', 'udapp'])
+        appManager.activatePlugin(['solidity', 'udapp', 'klaytn'])
       }
     })
 
