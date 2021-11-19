@@ -62,7 +62,10 @@
               "apps/remix-ide/src/app/editor/mode-solidity.js",
               "apps/remix-ide/js/**/*.js",
               "apps/remix-ide/src/assets/js/**/*.js"
-            ]
+            ],
+            "ssl": true,
+            "sslKey": "./server.key",
+            "sslCert": "./server.crt"
           },
           "configurations": {
             "production": {
