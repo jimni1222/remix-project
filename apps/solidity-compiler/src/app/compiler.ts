@@ -26,8 +26,8 @@ const defaultAppParameters = {
 const defaultCompilerParameters = {
   runs: '200',
   optimize: false,
-  version: 'soljson-v0.8.7+commit.e28d00a7',
-  evmVersion: null, // compiler default
+  version: 'soljson-v0.7.6+commit.7338295f',
+  evmVersion: 'constantinople', // compiler default
   language: 'Solidity'
 }
 export class CompilerClientApi extends CompilerApiMixin(PluginClient) implements ICompilerApi  {
