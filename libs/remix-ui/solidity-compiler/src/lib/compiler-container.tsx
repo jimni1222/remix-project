@@ -30,12 +30,12 @@ export const CompilerContainer = (props: CompilerContainerProps) => {
     allversions: [],
     customVersions: [],
     selectedVersion: null,
-    defaultVersion: 'soljson-v0.8.7+commit.e28d00a7.js', // this default version is defined: in makeMockCompiler (for browser test)
+    defaultVersion: 'soljson-v0.7.6+commit.7338295f.js', // this default version is defined: in makeMockCompiler (for browser test)
     runs: '',
     compiledFileName: '',
     includeNightlies: false,
     language: 'Solidity',
-    evmVersion: ''
+    evmVersion: 'constantinople'
   })
   const [disableCompileButton, setDisableCompileButton] = useState<boolean>(false)
   const compileIcon = useRef(null)
@@ -363,6 +363,10 @@ export const CompilerContainer = (props: CompilerContainerProps) => {
   }
 
   const _shouldBeAdded = (version) => {
+    // KLAYTN-TODO: Remove. A value to limit the compiler version displayed.
+    const notSupportedVersion = '0.8'
+    if (notSupportedVersion && version.includes(notSupportedVersion)) return false
+
     return !version.includes('nightly') ||
            (version.includes('nightly') && state.includeNightlies)
   }
@@ -539,10 +543,10 @@ export const CompilerContainer = (props: CompilerContainerProps) => {
             <label className="remixui_compilerLabel form-check-label" htmlFor="evmVersionSelector">EVM Version</label>
             <select value={state.evmVersion} onChange={(e) => handleEvmVersionChange(e.target.value)} className="custom-select" id="evmVersionSelector">
               <option data-id={state.evmVersion === 'default' ? 'selected' : ''} value="default">compiler default</option>
-              <option data-id={state.evmVersion === 'london' ? 'selected' : ''} value="london">london</option>
+              {/* <option data-id={state.evmVersion === 'london' ? 'selected' : ''} value="london">london</option>
               <option data-id={state.evmVersion === 'berlin' ? 'selected' : ''} value="berlin">berlin</option>
               <option data-id={state.evmVersion === 'istanbul' ? 'selected' : ''} value="istanbul">istanbul</option>
-              <option data-id={state.evmVersion === 'petersburg' ? 'selected' : ''} value="petersburg">petersburg</option>
+              <option data-id={state.evmVersion === 'petersburg' ? 'selected' : ''} value="petersburg">petersburg</option> */}
               <option data-id={state.evmVersion === 'constantinople' ? 'selected' : ''} value="constantinople">constantinople</option>
               <option data-id={state.evmVersion === 'byzantium' ? 'selected' : ''} value="byzantium">byzantium</option>
               <option data-id={state.evmVersion === 'spuriousDragon' ? 'selected' : ''} value="spuriousDragon">spuriousDragon</option>
