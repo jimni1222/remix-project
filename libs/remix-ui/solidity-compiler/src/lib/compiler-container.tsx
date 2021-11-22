@@ -19,6 +19,7 @@ declare global {
 const _paq = window._paq = window._paq || [] //eslint-disable-line
 
 export const CompilerContainer = (props: CompilerContainerProps) => {
+  console.log(`CompilerContainer`)
   const { api, compileTabLogic, tooltip, modal, compiledFileName, updateCurrentVersion, configurationSettings, isHardhatProject } = props // eslint-disable-line
   const [state, setState] = useState({
     hideWarnings: false,
@@ -545,9 +546,9 @@ export const CompilerContainer = (props: CompilerContainerProps) => {
               <option data-id={state.evmVersion === 'default' ? 'selected' : ''} value="default">compiler default</option>
               {/* <option data-id={state.evmVersion === 'london' ? 'selected' : ''} value="london">london</option>
               <option data-id={state.evmVersion === 'berlin' ? 'selected' : ''} value="berlin">berlin</option> */}
-              <option data-id={state.evmVersion === 'istanbul' ? 'selected' : ''} value="istanbul (Baobab)">istanbul</option>
+              <option data-id={state.evmVersion === 'istanbul' ? 'selected' : ''} value="istanbul">istanbul (Baobab)</option>
               <option data-id={state.evmVersion === 'petersburg' ? 'selected' : ''} value="petersburg">petersburg</option>
-              <option data-id={state.evmVersion === 'constantinople' ? 'selected' : ''} value="constantinople (Cypress)">constantinople</option>
+              <option data-id={state.evmVersion === 'constantinople' ? 'selected' : ''} value="constantinople">constantinople (Cypress)</option>
               <option data-id={state.evmVersion === 'byzantium' ? 'selected' : ''} value="byzantium">byzantium</option>
               <option data-id={state.evmVersion === 'spuriousDragon' ? 'selected' : ''} value="spuriousDragon">spuriousDragon</option>
               <option data-id={state.evmVersion === 'tangerineWhistle' ? 'selected' : ''} value="tangerineWhistle">tangerineWhistle</option>
