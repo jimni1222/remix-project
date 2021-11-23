@@ -22,7 +22,7 @@ const UniversalDAppUI = require('../ui/universal-dapp-ui')
 const profile = {
   name: 'udapp',
   displayName: 'Deploy & run transactions',
-  icon: 'assets/img/deployAndRun.webp',
+  icon: 'assets/img/Klaytn_Symbol_Black.png',
   description: 'execute and save transactions',
   kind: 'udapp',
   location: 'sidePanel',
