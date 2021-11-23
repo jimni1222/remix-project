@@ -19,7 +19,6 @@ declare global {
 const _paq = window._paq = window._paq || [] //eslint-disable-line
 
 export const CompilerContainer = (props: CompilerContainerProps) => {
-  console.log(`CompilerContainer`)
   const { api, compileTabLogic, tooltip, modal, compiledFileName, updateCurrentVersion, configurationSettings, isHardhatProject } = props // eslint-disable-line
   const [state, setState] = useState({
     hideWarnings: false,
