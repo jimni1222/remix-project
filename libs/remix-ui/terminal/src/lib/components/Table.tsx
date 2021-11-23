@@ -247,8 +247,8 @@ const showTable = (opts, showTableHash) => {
               data-id={`txLoggerTableHash${opts.hash}`}
               data-shared={`pair_${opts.hash}`}
             >
-              {val} wei
-              <CopyToClipboard content={`${val} wei`} />
+              {val} peb
+              <CopyToClipboard content={`${val} peb`} />
             </td>
           </tr>
         ) : null}
