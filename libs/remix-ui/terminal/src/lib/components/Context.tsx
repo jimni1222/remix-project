@@ -23,7 +23,7 @@ const Context = ({ opts, blockchain }) => {
           <span className='tx'>[vm]</span>
           <div className='txItem'><span className='txItemTitle'>from:</span> {from}</div>
           <div className='txItem'><span className='txItemTitle'>to:</span> {to}</div>
-          <div className='txItem'><span className='txItemTitle'>value:</span> {value} wei</div>
+          <div className='txItem'><span className='txItemTitle'>value:</span> {value} peb</div>
           <div className='txItem'><span className='txItemTitle'>data:</span> {input}</div>
           <div className='txItem'><span className='txItemTitle'>logs:</span> {logs}</div>
           <div className='txItem'><span className='txItemTitle'>hash:</span> {hash}</div>
@@ -36,7 +36,7 @@ const Context = ({ opts, blockchain }) => {
           <span className='tx'>[block:{block} txIndex:{i}]</span>
           <div className='txItem'><span className='txItemTitle'>from:</span> {from}</div>
           <div className='txItem'><span className='txItemTitle'>to:</span> {to}</div>
-          <div className='txItem'><span className='txItemTitle'>value:</span> {value} wei</div>
+          <div className='txItem'><span className='txItemTitle'>value:</span> {value} peb</div>
           <div className='txItem'><span className='txItemTitle'>data:</span> {input}</div>
           <div className='txItem'><span className='txItemTitle'>logs:</span> {logs}</div>
           <div className='txItem'><span className='txItemTitle'>hash:</span> {hash}</div>
@@ -50,7 +50,7 @@ const Context = ({ opts, blockchain }) => {
           <span className='tx'>[block:{block} txIndex:{i}]</span>
           <div className='txItem'><span className='txItemTitle'>from:</span> {from}</div>
           <div className='txItem'><span className='txItemTitle'>to:</span> {to}</div>
-          <div className='txItem'><span className='txItemTitle'>value:</span> {value} wei</div>
+          <div className='txItem'><span className='txItemTitle'>value:</span> {value} peb</div>
           <div className='txItem'><span className='txItemTitle'>data:</span> {input}</div>
           <div className='txItem'><span className='txItemTitle'>logs:</span> {logs}</div>
           <div className='txItem'><span className='txItemTitle'>hash:</span> {hash}</div>
