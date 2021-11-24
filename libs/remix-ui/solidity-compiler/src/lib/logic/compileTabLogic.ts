@@ -35,7 +35,7 @@ export class CompileTabLogic {
 
     this.evmVersion = this.api.getCompilerParameters().evmVersion
     if (this.evmVersion === 'undefined' || this.evmVersion === 'null' || !this.evmVersion) {
-      this.evmVersion = null
+      this.evmVersion = 'constantinople'
     }
     this.api.setCompilerParameters({ evmVersion: this.evmVersion })
     this.compiler.set('evmVersion', this.evmVersion)
