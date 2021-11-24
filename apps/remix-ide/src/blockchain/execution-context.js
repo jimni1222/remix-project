@@ -24,7 +24,7 @@ export class ExecutionContext {
     this.blockGasLimitDefault = 4300000
     this.blockGasLimit = this.blockGasLimitDefault
     this.currentFork = 'london'
-    this.mainNetGenesisHash = '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3'
+    this.mainNetGenesisHash = '0xc72e5293c3c3ba38ed8ae910f780e4caaa9fb95e79784f7ab74c3c262ea7137e'
     this.customNetWorks = {}
     this.blocks = {}
     this.latestBlockNumber = 0
@@ -33,12 +33,14 @@ export class ExecutionContext {
   }
 
   init (config) {
-    if (config.get('settings/always-use-vm')) {
-      this.executionContext = 'vm'
-    } else {
-      this.executionContext = injectedProvider ? 'injected' : 'vm'
-      if (this.executionContext === 'injected') this.askPermission()
-    }
+    // if (config.get('settings/always-use-vm')) {
+    //   this.executionContext = 'vm'
+    // } else {
+    //   this.executionContext = injectedProvider ? 'injected' : 'baobab'
+    //   if (this.executionContext === 'injected') this.askPermission()
+    // }
+
+    this.executionContext = 'baobab'
   }
 
   askPermission () {
@@ -75,6 +77,8 @@ export class ExecutionContext {
         let name = null
         if (err) name = 'Unknown'
         // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
+        else if (id === 8217) name = 'Cypress'
+        else if (id === 1001) name = 'Baobab'
         else if (id === 1) name = 'Main'
         else if (id === 3) name = 'Ropsten'
         else if (id === 4) name = 'Rinkeby'
@@ -82,7 +86,7 @@ export class ExecutionContext {
         else if (id === 42) name = 'Kovan'
         else name = 'Custom'
 
-        if (id === '1') {
+        if (id === '8217') {
           web3.eth.getBlock(0, (error, block) => {
             if (error) console.log('cant query first block')
             if (block && block.hash !== this.mainNetGenesisHash) name = 'Custom'
@@ -132,6 +136,12 @@ export class ExecutionContext {
       this.executionContext = context
       this.currentFork = value.fork
       this.event.trigger('contextChanged', ['vm'])
+      return cb()
+    }
+
+    if (context === 'cypress' || context === 'baobab') {
+      this.executionContext = context
+      this.event.trigger('contextChanged', [context])
       return cb()
     }
 
@@ -223,6 +233,8 @@ export class ExecutionContext {
 
   txDetailsLink (network, hash) {
     const transactionDetailsLinks = {
+      Cypress: 'https://scope.klaytn.com/tx/',
+      Baobab: 'https://baobab.scope.klaytn.com/tx/',
       Main: 'https://www.etherscan.io/tx/',
       Rinkeby: 'https://rinkeby.etherscan.io/tx/',
       Ropsten: 'https://ropsten.etherscan.io/tx/',

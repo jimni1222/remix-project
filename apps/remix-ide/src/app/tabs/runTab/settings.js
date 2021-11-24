@@ -91,6 +91,36 @@ class SettingsUI {
   render () {
     this.netUI = yo`<span class="${css.network} badge badge-secondary"></span>`
 
+    // KLAYTN-TODO: Below codes are commented to not show not supported Javascript VM version.
+    // var environmentElLegacy = yo`
+    //   <div class="${css.crow}">
+    //     <label id="selectExEnv" class="${css.settingsLabel}">
+    //       Environment
+    //     </label>
+    //     <div class="${css.environment}">
+    //       <select id="selectExEnvOptions" data-id="settingsSelectEnvOptions" class="form-control ${css.select} custom-select">
+    //         <option id="vm-mode-london" data-id="settingsVMLondonMode"
+    //           title="Execution environment does not connect to any node, everything is local and in memory only."
+    //           value="vm-london" name="executionContext" fork="london"> JavaScript VM (London)
+    //         </option>
+    //         <option id="vm-mode-berlin" data-id="settingsVMBerlinMode"
+    //           title="Execution environment does not connect to any node, everything is local and in memory only."
+    //           value="vm-berlin" name="executionContext" fork="berlin" > JavaScript VM (Berlin)
+    //         </option>
+    //         <option id="injected-mode" data-id="settingsInjectedMode"
+    //           title="Execution environment has been provided by Metamask or similar provider."
+    //           value="injected" name="executionContext"> Injected Web3
+    //         </option>
+    //         <option id="web3-mode" data-id="settingsWeb3Mode"
+    //           title="Execution environment connects to node at localhost (or via IPC if available), transactions will be sent to the network and can cause loss of money or worse!
+    //           If this page is served via https and you access your node via http, it might not work. In this case, try cloning the repository and serving it via http."
+    //           value="web3" name="executionContext"> Web3 Provider
+    //         </option>
+    //       </select>
+    //       <a href="https://remix-ide.readthedocs.io/en/latest/run.html#run-setup" target="_blank"><i class="${css.infoDeployAction} ml-2 fas fa-info" title="check out docs to setup Environment"></i></a>
+    //     </div>
+    //   </div>
+    // `
     var environmentEl = yo`
       <div class="${css.crow}">
         <label id="selectExEnv" class="${css.settingsLabel}">
@@ -98,13 +128,13 @@ class SettingsUI {
         </label>
         <div class="${css.environment}">
           <select id="selectExEnvOptions" data-id="settingsSelectEnvOptions" class="form-control ${css.select} custom-select">
-            <option id="vm-mode-london" data-id="settingsVMLondonMode"
-              title="Execution environment does not connect to any node, everything is local and in memory only."
-              value="vm-london" name="executionContext" fork="london"> JavaScript VM (London)
+            <option id="baobab-public-en" data-id="settingsBaobabMode"
+              title="Execution environment has been provided by Baobab EN."
+              value="baobab" name="executionContext"> Baobab
             </option>
-            <option id="vm-mode-berlin" data-id="settingsVMBerlinMode"
-              title="Execution environment does not connect to any node, everything is local and in memory only."
-              value="vm-berlin" name="executionContext" fork="berlin" > JavaScript VM (Berlin)
+            <option id="cypress-public-en" data-id="settingsCypressMode"
+              title="Execution environment has been provided by Cypress EN."
+              value="cypress" name="executionContext"> Cypress
             </option>
             <option id="injected-mode" data-id="settingsInjectedMode"
               title="Execution environment has been provided by Metamask or similar provider."
@@ -313,6 +343,8 @@ class SettingsUI {
 
         break
       case 'vm':
+      case 'baobab':
+      case 'cypress':
         plusBtn.classList.remove(css.disableMouseEvents)
         plusTitle.title = 'Create a new account'
 
@@ -342,6 +374,37 @@ class SettingsUI {
   }
 
   newAccount () {
+    if (this.blockchain.isKlaytn()) {
+      // reset the local storage
+      localStorage.removeItem('keystoreFileText')
+
+      // call current provider's newAccount
+      return this.blockchain.newAccount(
+        '',
+        (cb) => {
+          modalDialogCustom.importAccount((err, keystore, passphrase) => {
+            if (err) {
+              return modalDialogCustom.alert(err)
+            }
+            // To let user know an error with dialog, pass third param
+            cb(keystore, passphrase, modalDialogCustom.alert)
+          },
+          // cancel
+          () => {},
+          (e) => this.uploadKeystoreFile(e), // update key file name and read
+          (e) => this.checkKeystoreFile(e), // check keystore validation to check HRA
+          (e) => this.handleTabChange(e) // handle tab changing
+          )
+        },
+        (error, address) => {
+          if (error) {
+            return addTooltip('Cannot create an account: ' + error)
+          }
+          addTooltip(`account ${address} created`)
+        }
+      )
+    }
+
     this.blockchain.newAccount(
       '',
       (cb) => {
@@ -443,6 +506,49 @@ class SettingsUI {
       }
     }
     txOrigin.setAttribute('value', accounts[0])
+  }
+
+  handleTabChange (event) {
+    var handler = event.target.dataset.id
+    if (handler === 'importKeyByPrivatekey') {
+      document.querySelector('[data-id="importKeyByPrivatekey"]').classList.add('active_tab')
+      document.querySelector('[data-id="importKeyByKeystore"]').classList.remove('active_tab')
+      document.querySelector('#importKeyByPrivatekey').style.display = 'block'
+      document.querySelector('#importKeyByKeystore').style.display = 'none'
+    } else {
+      document.querySelector('[data-id="importKeyByPrivatekey"]').classList.remove('active_tab')
+      document.querySelector('[data-id="importKeyByKeystore"]').classList.add('active_tab')
+      document.querySelector('#importKeyByPrivatekey').style.display = 'none'
+      document.querySelector('#importKeyByKeystore').style.display = 'block'
+    }
+  }
+
+  uploadKeystoreFile (event) {
+    var file = event.target.files[0]
+
+    var keyfile = new FileReader()
+
+    // decrypt keystorefile
+    var decryptKeystoreFile = () => {
+      document.getElementById('dummyInputText').innerText = file.name
+      document.getElementById('dummyInputText').setAttribute('title', file.name)
+
+      localStorage.setItem('keystoreFileText', keyfile.result)
+    }
+
+    keyfile.addEventListener('load', decryptKeystoreFile)
+    keyfile.readAsText(file)
+  }
+
+  checkKeystoreFile () {
+    var keystore = localStorage.getItem('keystoreFileText')
+
+    if (!keystore) { return }
+
+    if (/addressAsHumanReadableString/.test(keystore)) {
+      this.alert('Cannot import HRA keystore file.')
+    }
+    return keystore
   }
 }
 

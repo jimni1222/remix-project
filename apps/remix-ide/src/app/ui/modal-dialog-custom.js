@@ -13,6 +13,70 @@ module.exports = {
   promptPassphrase: function (title, text, inputValue, ok, cancel) {
     return prompt(title, text, true, inputValue, ok, cancel)
   },
+  importAccount: function (ok, cancel, uploadKeystoreFile, checkKeystoreFile, handleTabChange) {
+    var element = yo`
+      <div class="${css.import_file}">
+        <div class="${css.tab_wrapper}">
+          <button type="button" class="${css.import_file_tab_button} active_tab" data-id="importKeyByPrivatekey" onclick="${handleTabChange}">Private key</button>
+          <button type="button" class="${css.import_file_tab_button} " data-id="importKeyByKeystore" onclick="${handleTabChange}">Keystore</button>
+        </div>
+        <div>
+          <div id="importKeyByPrivatekey" class="${css.private_key}" style="display:block">
+            <dl>
+              <dt>Private Key</dt>
+              <dd>
+                <input id="privateKeyField" class="${css.import_prompt_text}" type="text" placeholder="Input your private key..." />
+                <span class="invalid_message_wrapper"></span>
+              </dd>
+            </dl>
+          </div>
+          <div id="importKeyByKeystore" class="${css.keystore}" style="display:none;">
+            <dl>
+              <dt>Keystore File</dt>
+              <dd>
+                <input id="getKeystoreFile" type="file" autofill="false" onchange="${uploadKeystoreFile}" />
+                <div id="dummyInputText" class="${css.import_prompt_text} ${css.dummy_input_text}"></div>
+                <label for="getKeystoreFile" title="Find key file">get key file</label>
+                <span class="invalid_message_wrapper"></span>
+              </dd>
+            </dl>
+            <dl>
+              <dt>Password</dt>
+              <dd>
+                <input id="keyStorePasswordField" class="${css.import_prompt_text}" type="password" autofill="false" autocomplete="false" />
+              </dd>
+            </dl>
+          </div>
+        </div>
+      </div>`
+
+    modal('Import an account', yo`<div>${element}</div>`,
+      {
+        // ok
+        fn: () => {
+          if (typeof ok === 'function') {
+            // simple validate
+            if (element.querySelector('.active_tab').dataset.id === 'importKeyByPrivatekey') {
+              if (!element.querySelector('#privateKeyField').value) {
+                ok('Please Enter privateKey')
+              }
+              ok(null, element.querySelector('#privateKeyField').value, null)
+            } else if (element.querySelector('.active_tab').dataset.id === 'importKeyByKeystore') {
+              if (!element.querySelector('#getKeystoreFile').value || !element.querySelector('#keyStorePasswordField').value) {
+                ok('Please Check keystore file and password')
+              }
+              ok(null, checkKeystoreFile(), element.querySelector('#keyStorePasswordField').value)
+            } else {
+              ok('Tab is not activated')
+            }
+          }
+        }
+      },
+      {
+        fn: () => { if (typeof cancel === 'function') cancel() }
+      }
+    )
+  },
   promptPassphraseCreation: function (ok, cancel) {
     var text = 'Please provide a Passphrase for the account creation'
     var input = yo`

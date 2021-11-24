@@ -8,6 +8,7 @@ import { ExecutionContext } from './execution-context'
 import VMProvider from './providers/vm.js'
 import InjectedProvider from './providers/injected.js'
 import NodeProvider from './providers/node.js'
+import KlaytnCustomProvider from './providers/klaytnCustomProvider.js'
 import { execution, EventManager, helpers } from '@remix-project/remix-lib'
 const { txFormat, txExecution, typeConversion, txListener: Txlistener, TxRunner, TxRunnerWeb3, txHelper } = execution
 const { txResultHelper: resultToRemixTx } = helpers
@@ -20,7 +21,11 @@ const profile = {
   displayName: 'Blockchain',
   description: 'Blockchain - Logic',
   methods: [],
-  version: packageJson.version
+  version: packageJson.version,
+  klaytn_rpc_url: {
+    BAOBAB: 'https://api.baobab.klaytn.net:8651/',
+    CYPRESS: 'https://kaikas.cypress.klaytn.net:8651/'
+  }
 }
 
 class Blockchain extends Plugin {
@@ -82,6 +87,8 @@ class Blockchain extends Plugin {
     this.providers.vm = new VMProvider(this.executionContext)
     this.providers.injected = new InjectedProvider(this.executionContext)
     this.providers.web3 = new NodeProvider(this.executionContext, this.config)
+    this.providers.baobab = new KlaytnCustomProvider(this.executionContext, profile.klaytn_rpc_url.BAOBAB)
+    this.providers.cypress = new KlaytnCustomProvider(this.executionContext, profile.klaytn_rpc_url.CYPRESS)
   }
 
   getCurrentProvider () {
@@ -234,11 +241,15 @@ class Blockchain extends Plugin {
   isWeb3Provider () {
     const isVM = this.getProvider() === 'vm'
     const isInjected = this.getProvider() === 'injected'
-    return (!isVM && !isInjected)
+    return (!isVM && !isInjected && !this.isKlaytn())
   }
 
   isInjectedWeb3 () {
     return this.getProvider() === 'injected'
+  }
+
+  isKlaytn () {
+    return this.getProvider() === 'baobab' || this.getProvider() === 'cypress'
   }
 
   signMessage (message, account, passphrase, cb) {
