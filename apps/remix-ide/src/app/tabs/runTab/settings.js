@@ -170,7 +170,7 @@ class SettingsUI {
         <div class="${css.account}">
           <select data-id="runTabSelectAccount" name="txorigin" class="form-control ${css.select} custom-select pr-4" id="txorigin"></select>
           <div style="margin-left: -5px;">${copyToClipboard(() => document.querySelector('#runTabView #txorigin').value)}</div>
-          <i id="remixRunSignMsg" data-id="settingsRemixRunSignMsg" class="mx-1 fas fa-edit ${css.icon}" aria-hidden="true" onclick=${this.signMessage.bind(this)} title="Sign a message using this account key"></i>
+          <i id="remixRunSignMsg" data-id="settingsRemixRunSignMsg" class="mx-1 fas fa-edit ${css.icon}" aria-hidden="true" onclick=${this.signMessage.bind(this)} style="display: 'none';" title="Sign a message using this account key"></i>
         </div>
       </div>
     `
@@ -336,27 +336,32 @@ class SettingsUI {
     // enable/disable + button
     const plusBtn = document.getElementById('remixRunPlus')
     const plusTitle = document.getElementById('remixRunPlusWraper')
+    const signBtn = document.getElementById('remixRunSignMsg')
     switch (this.selectExEnv.value) {
       case 'injected':
         plusBtn.classList.add(css.disableMouseEvents)
         plusTitle.title = "Unfortunately it's not possible to create an account using injected web3. Please create the account directly from your provider (i.e metamask or other of the same type)."
-
+        signBtn.style.display = 'none'
         break
       case 'vm':
+        plusBtn.classList.remove(css.disableMouseEvents)
+        plusTitle.title = 'Create a new account'
+        signBtn.style.display = 'none'
+        break
       case 'baobab':
       case 'cypress':
         plusBtn.classList.remove(css.disableMouseEvents)
         plusTitle.title = 'Create a new account'
-
+        signBtn.style.display = 'block'
         break
-
       case 'web3':
         this.onPersonalChange()
-
+        signBtn.style.display = 'none'
         break
       default: {
         plusBtn.classList.add(css.disableMouseEvents)
         plusTitle.title = `Unfortunately it's not possible to create an account using an external wallet (${this.selectExEnv.value}).`
+        signBtn.style.display = 'none'
       }
     }
   }

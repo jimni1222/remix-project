@@ -1,6 +1,7 @@
 /* global ethereum */
 'use strict'
 import Web3 from 'web3'
+import Caver from 'caver-js'
 import { execution } from '@remix-project/remix-lib'
 import EventManager from '../lib/events'
 
@@ -12,6 +13,8 @@ if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
 } else {
   web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
 }
+
+const caver = new Caver(new Caver.providers.HttpProvider('https://kaikas.baobab.klaytn.net:8651'))
 
 /*
   trigger contextChanged, web3EndpointChanged
@@ -67,6 +70,10 @@ export class ExecutionContext {
   web3 () {
     if (this.customWeb3[this.executionContext]) return this.customWeb3[this.executionContext]
     return web3
+  }
+
+  caver () {
+    return caver
   }
 
   detectNetwork (callback) {
@@ -153,6 +160,7 @@ export class ExecutionContext {
         this.askPermission()
         this.executionContext = context
         web3.setProvider(injectedProvider)
+        caver.setProvider(injectedProvider)
         await this._updateChainContext()
         this.event.trigger('contextChanged', ['injected'])
         return cb()
@@ -214,6 +222,7 @@ export class ExecutionContext {
     const context = value.context
 
     web3.setProvider(endpoint)
+    caver.setProvider(endpoint)
     web3.eth.net.isListening((err, isConnected) => {
       if (!err && isConnected === true) {
         this.executionContext = context
@@ -223,9 +232,11 @@ export class ExecutionContext {
         cb()
       } else if (isConnected === 'canceled') {
         web3.setProvider(oldProvider)
+        caver.setProvider(oldProvider)
         cb()
       } else {
         web3.setProvider(oldProvider)
+        caver.setProvider(oldProvider)
         cb('Not possible to connect to the Web3 provider. Make sure the provider is running, a connection is open (via IPC or RPC) or that the provider plugin is properly configured.')
       }
     })

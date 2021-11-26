@@ -53,11 +53,10 @@ class KlaytnCustomProvider {
     this.executionContext.web3().eth.getGasPrice(cb)
   }
 
-  signMessage (message, account, passphrase, cb) {
+  signMessage (message, address, passphrase, cb) {
     try {
-      this.executionContext.web3().accounts.sign(message, account, (error, signedData) => {
-        cb(error, '0x' + signedData.messageHash, signedData.signature)
-      })
+      const signedData = this.executionContext.caver().klay.accounts.sign(message, this.executionContext.web3().eth.accounts.wallet[address].privateKey)
+      cb(null, signedData.messageHash, signedData.signature)
     } catch (e) {
       cb(e.message)
     }
