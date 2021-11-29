@@ -30,7 +30,7 @@ export const CompilerContainer = (props: CompilerContainerProps) => {
     allversions: [],
     customVersions: [],
     selectedVersion: null,
-    defaultVersion: 'soljson-v0.7.6+commit.7338295f.js', // this default version is defined: in makeMockCompiler (for browser test)
+    defaultVersion: 'soljson-v0.8.7+commit.e28d00a7.js', // this default version is defined: in makeMockCompiler (for browser test)
     runs: '',
     compiledFileName: '',
     includeNightlies: false,
@@ -363,10 +363,6 @@ export const CompilerContainer = (props: CompilerContainerProps) => {
   }
 
   const _shouldBeAdded = (version) => {
-    // KLAYTN-TODO: Remove. A value to limit the compiler version displayed.
-    const notSupportedVersion = '0.8'
-    if (notSupportedVersion && version.includes(notSupportedVersion)) return false
-
     return !version.includes('nightly') ||
            (version.includes('nightly') && state.includeNightlies)
   }
