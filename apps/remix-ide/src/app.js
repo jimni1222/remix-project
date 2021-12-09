@@ -213,6 +213,7 @@ class App {
       modalDialogCustom.alert('Welcome to the Remix alpha instance. Please use it to try out latest features. But use preferably https://remix.ethereum.org for any production work.')
     } else if (window.location.protocol.indexOf('http') === 0 &&
     window.location.hostname !== 'remix.ethereum.org' &&
+    window.location.hostname !== 'ide.klaytn.com' &&
     window.location.hostname !== 'localhost' &&
     window.location.hostname !== '127.0.0.1') {
       modalDialogCustom.alert(`The Remix IDE has moved to http://remix.ethereum.org.\n
