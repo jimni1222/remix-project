@@ -1,0 +1,20 @@
+name: unit-test
+on:
+   pull_request:
+     branches:
+       - dev
+     types: [opened, synchronize]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14.17.6'
+    - name: Test Build
+      run: |
+        npm install -g @nrwl/cli
+        npm install
+        npm run downloadsolc_assets
+        npm run build:production
