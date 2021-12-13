@@ -28,4 +28,4 @@ jobs:
           body: |
               "This PR is automatically created by CI to release a new official version of ${GITHUB_REPOSITORY}.\n
                When this PR is approved by someone, a new remixForKlaytn version will be released."
- 
+
