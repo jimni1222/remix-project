@@ -20,12 +20,12 @@ jobs:
         id: create_pr
         run: |
           export Tag=${{ steps.vars.outputs.tag }}
-          gh pr create --label ${{ env.labels }} --base ${{ env.base }} --title ${{ env.title }} --head release/${Tag%-*} --body ${{ env.body }}
+          gh pr create --base ${{ env.base }} --title ${{ env.title }} --head release/${Tag%-*} --body ${{ env.body }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          base: master
-          title: "[Master]_release/${Tag%-*}"
+          base: remixForKlaytn
+          title: "[remixForKlaytn]_release/${Tag%-*}"
           body: |
               "This PR is automatically created by CI to release a new official version of ${GITHUB_REPOSITORY}.\n
                When this PR is approved by someone, a new remixForKlaytn version will be released."
-          labels: github-action 
+ 
