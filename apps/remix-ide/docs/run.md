@@ -39,7 +39,7 @@ To run Remix Desktop & a local test node, use this Geth command:
 
 Also see [Geth Docs on Dev mode](https://geth.ethereum.org/getting-started/dev-mode)
 
-The Web3 Provider Endpoint for a local node is **http://localhost:8545**
+The Web3 Provider Endpoint for a local node is **http://localhost:8551**
 
 ---
 

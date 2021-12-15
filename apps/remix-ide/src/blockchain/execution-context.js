@@ -11,7 +11,7 @@ if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
   var injectedProvider = window.ethereum
   web3 = new Web3(injectedProvider)
 } else {
-  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+  web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8551'))
 }
 
 const caver = new Caver(new Caver.providers.HttpProvider('https://kaikas.baobab.klaytn.net:8651'))

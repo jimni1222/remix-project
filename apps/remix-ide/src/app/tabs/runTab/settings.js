@@ -282,7 +282,7 @@ class SettingsUI {
 
   setExecutionContext (context) {
     this.blockchain.changeExecutionContext(context, () => {
-      modalDialogCustom.prompt('External node request', this.web3ProviderDialogBody(), 'http://127.0.0.1:8545', (target) => {
+      modalDialogCustom.prompt('External node request', this.web3ProviderDialogBody(), 'http://127.0.0.1:8551', (target) => {
         this.blockchain.setProviderFromEndpoint(target, context, (alertMsg) => {
           if (alertMsg) addTooltip(alertMsg)
           this.setFinalContext()

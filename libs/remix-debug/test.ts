@@ -41,7 +41,7 @@ console.dir(compilation)
 console.dir(compilation['data'].errors)
 
 var cmdLine = new CmdLine()
-cmdLine.connect('http', 'http://localhost:8545')
+cmdLine.connect('http', 'http://localhost:8551')
 cmdLine.loadCompilationResult(compilation)
 cmdLine.initDebugger()
 
